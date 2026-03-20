@@ -1,0 +1,373 @@
+/**
+ * Directory Styles
+ * Restrained, factual presentation per MN design directive
+ * Two-tier structure: Index rows + Profile modal
+ */
+
+/* ========================================
+   DIRECTORY SECTION
+   ======================================== */
+
+.directory-section {
+  margin-bottom: var(--space-2xl);
+}
+
+/* ========================================
+   FILTERS
+   ======================================== */
+
+.directory-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.filter-btn {
+  font-family: var(--font-secondary);
+  font-size: var(--text-xs);
+  padding: var(--space-xs) var(--space-sm);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-light);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.filter-btn:hover {
+  border-color: var(--color-text);
+  color: var(--color-text);
+}
+
+.filter-btn.active {
+  background: var(--color-text);
+  border-color: var(--color-text);
+  color: var(--color-bg);
+}
+
+
+/* ========================================
+   DIRECTORY LIST (TIER 1)
+   ======================================== */
+
+.directory-list {
+  margin-bottom: var(--space-lg);
+}
+
+.practitioner-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) 0;
+  border-bottom: 1px solid var(--color-border-light);
+  gap: var(--space-md);
+}
+
+.practitioner-row:first-child {
+  border-top: 1px solid var(--color-border-light);
+}
+
+.practitioner-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-sm);
+  flex: 1;
+}
+
+.practitioner-name {
+  font-weight: 500;
+  color: var(--color-text);
+  min-width: 180px;
+}
+
+.practitioner-location {
+  font-size: var(--text-sm);
+  color: var(--color-text-light);
+  min-width: 150px;
+}
+
+.practitioner-languages {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.practitioner-actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+}
+
+.action-link,
+.btn-email,
+.btn-profile {
+  font-family: var(--font-secondary);
+  font-size: var(--text-xs);
+  color: var(--color-link);
+  text-decoration: none;
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid var(--color-border);
+  background: transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.action-link:hover,
+.btn-email:hover,
+.btn-profile:hover {
+  border-color: var(--color-text);
+  color: var(--color-text);
+}
+
+.directory-note {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin-top: var(--space-md);
+}
+
+.no-results,
+.error {
+  color: var(--color-text-muted);
+  padding: var(--space-lg) 0;
+  text-align: center;
+}
+
+
+/* ========================================
+   PROFILE MODAL (TIER 2)
+   ======================================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition-base);
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background: var(--color-bg);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  transform: translateY(20px);
+  transition: transform var(--transition-base);
+}
+
+.modal-overlay.active .modal-content {
+  transform: translateY(0);
+}
+
+.modal-close {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-fast);
+}
+
+.modal-close:hover {
+  color: var(--color-text);
+}
+
+.modal-body {
+  padding: var(--space-xl);
+}
+
+
+/* ========================================
+   PROFILE CONTENT
+   ======================================== */
+
+.profile {
+  /* Minimal styling - let content breathe */
+}
+
+/* Profile Header with Photo */
+.profile-header {
+  display: flex;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+  align-items: flex-start;
+}
+
+.profile-photo {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.profile-photo-placeholder {
+  width: 120px;
+  height: 120px;
+  background: var(--color-border-light);
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.profile-initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  background: linear-gradient(135deg, #e8e8e8 0%, #d0d0d0 100%);
+}
+
+.profile-header-info {
+  flex: 1;
+}
+
+.profile-name {
+  font-size: var(--text-2xl);
+  margin: 0 0 var(--space-xs) 0;
+}
+
+.profile-location {
+  font-size: var(--text-base);
+  color: var(--color-text-light);
+  margin: 0 0 var(--space-lg) 0;
+}
+
+.profile-section {
+  margin-bottom: var(--space-lg);
+}
+
+.profile-section h3 {
+  font-family: var(--font-secondary);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-xs) 0;
+  font-weight: 500;
+}
+
+.profile-section p {
+  margin: 0;
+  line-height: var(--leading-relaxed);
+}
+
+.profile-contact {
+  margin-top: var(--space-xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--color-border-light);
+}
+
+.profile-contact p {
+  margin: 0 0 var(--space-xs) 0;
+}
+
+.profile-contact a {
+  color: var(--color-link);
+  text-decoration: none;
+}
+
+.profile-contact a:hover {
+  text-decoration: underline;
+}
+
+.profile-action {
+  font-family: var(--font-secondary);
+  font-size: var(--text-sm);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-text);
+  color: var(--color-text);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.profile-action:hover {
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+
+.profile-action--secondary {
+  border-color: var(--color-border);
+  color: var(--color-text-light);
+}
+
+.profile-action--secondary:hover {
+  border-color: var(--color-text);
+  background: transparent;
+  color: var(--color-text);
+}
+
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  .practitioner-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+
+  .practitioner-info {
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .practitioner-name {
+    min-width: 0;
+  }
+
+  .practitioner-location {
+    min-width: 0;
+  }
+
+  .practitioner-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .modal-body {
+    padding: var(--space-lg);
+  }
+
+  .profile-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .profile-photo,
+  .profile-photo-placeholder {
+    width: 100px;
+    height: 100px;
+  }
+
+  .profile-action {
+    text-align: center;
+  }
+}

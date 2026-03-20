@@ -1,0 +1,308 @@
+/**
+ * MN Practitioner Directory
+ * Two-tier structure: Index (Tier 1) + Profile Modal (Tier 2)
+ */
+
+(function() {
+  'use strict';
+
+  // Image URL mapping (CDN URLs from live site)
+  const PRACTITIONER_IMAGES = {
+    "asta-blazinskiene": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74a88b0b72d6a16382c6a3_MN_0059_asta1.jpg",
+    "sacha-lacoste": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74a7605523b777efadbbdb_MN_0005_Sacha%20Lacoste.jpg",
+    "nadine-deswasiere": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74a7cd16011a0298c8d0c5_MN_0019_Nadine%20Authentic%20Emotion-IMG_3427-Small%20copie.jpg",
+    "robert-detey": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74a442e76bcc497d5e9048_robert.jpg",
+    "renata-skimeliene": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/600011c61622e9a6161a0e4f_Renata-new.jpg",
+    "samuel-gerrand": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5ff8252f47e0ed3664d645fc_samuel-new-jan2021.jpg",
+    "lina-jureniene": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/608194702cad2503ccd31ef7_Lina%20Jureniene.png",
+    "audra-stankeviciene": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/60e4211013b8d8287508eed9_Audra.jpg",
+    "daniel-wagner": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74a85cb14242fd46898c7d_MN_0044_daniel%20wagner.jpg",
+    "mohamed-karim-lahlou": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74a8bc0b72d6f49982c7c5_MN_0062_Mohamed_Karim.jpg",
+    "corinne-jacob": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74a87eb1424272c2898ccc_MN_0050_Corinne_Jacob.jpg",
+    "delphine-vasseur": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74a8a2b142427cc0898d45_MN_0057_delphine-vasseur_portrait-1.jpg",
+    "jan-goodman": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74a8ed0b72d648c782c86e_MN_0072_jan.jpg",
+    "marjorie-leal-delgado": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74a90c5523b7f1c0adc24c_MN_0076_Marjorie_photo2019.jpeg",
+    "delphine-pierrejean": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74a925e76bcc38c45ec1d2_MN_0079_delphine-pierrejean.jpg",
+    "eufemia-colucci": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74a93de76bcc10445ec20c_MN_0082_Eufemia%20Colucci.jpg",
+    "evelyne-ivorra": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74a95b5523b7f7f4adc2c9_MN_0086_Evelyne%20Ivorra%20MNI.jpg",
+    "julien-schmidt": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74a9e87c9bee44f8e8f5b6_MN_0093_julien-schmidt.jpg",
+    "elodie-jalicoux": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74aa137c9bee5da4e8f639_MN_0096_elodie-jalicoux.jpg",
+    "laetitia-bizard": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74aa53e76bcc17605ec5a2_MN_0099_Laetitia.jpg",
+    "ingrid-atamian": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74aa6c0b72d6a81882cd0a_MN_0100_ingrid.jpg",
+    "christine-clifton": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74aa87e76bcc6cff5ec63b_MN_0101_christine.jpg",
+    "ilze-usacka-priekule": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/6167acd8ef8d9854bb0e7fa4_Ilze_Usacka_Priekule.jpg",
+    "carole-rayon": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74aacf7c9bee71ece8f802_MN_0104_carole-rayon.jpg",
+    "pierre-wansek": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74aae90b72d6b18e82ce17_MN_0105_pierre-wansek.jpg",
+    "celine-bouillaguet": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74ab090b72d60d0282ce91_MN_0106_celine.jpg",
+    "catherine-heurtebise": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74ab320b72d68e8482cf45_MN_0107_catherine-heurtebise.jpg",
+    "stephane-bachmann": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74ab4ab1424256b3899240_MN_0108_stephane-bachmann.jpg",
+    "benoit-rossetti": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74ab610b72d6dffd82cfcd_MN_0109_benoit-rossetti.jpg",
+    "christine-bollard": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74ab77b142425f5e899298_MN_0110_christine-bollard.jpg",
+    "anna-perrenoud": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74ab980b72d6a94882d064_MN_0111_anna-perrenoud.jpg",
+    "rahul-mishra": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74abb30b72d6a09a82d0c1_MN_0112_rahul-mishra.jpg",
+    "nolwenn-poens": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74abcc0b72d6020a82d133_MN_0113_nolwenn-poens.jpg",
+    "emmanuel-le-bouille": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74abe27c9beef95ae8fc8c_MN_0114_emmanuel-le-bouille.jpg",
+    "mathilde-blanchardon": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74ac060b72d65f9f82d24a_MN_0115_Mathilde-Blanchardon.jpg",
+    "valerie-kligerman": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74ac1fb14242b0db899434_MN_0116_valerie-kligerman.jpg",
+    "sarah-cabero": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74ac3a5523b770d1adc9f0_MN_0117_sarah-cabero.jpg",
+    "dimitri-guiller": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74ac5ee76bcc91df5ecc52_MN_0118_dimitri-guiller.jpg",
+    "florent-rousset": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74ac73e76bcc5c0c5eccb0_MN_0119_florent-rousset.jpg",
+    "wes-lucus": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74ac8a7c9beefbafe8fde9_MN_0120_wes-lucus.jpg",
+    "muriel-rodriguez": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74aca00b72d662d682d3ae_MN_0121_muriel-rodriguez.jpg",
+    "sophie-koubbi": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74acb75523b71dcaadcabd_MN_0122_sophie-koubbi.jpg",
+    "serena-cecile-vaytilingom": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74acd3e76bcc56e65ecd96_MN_0123_serena-cecile-vaytilingom.jpg",
+    "catherine-serres": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74acf35523b7cd9badcb8b_MN_0124_catherine-serres.jpg",
+    "aurore-leclerc": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74ad1de76bcc67c95ece77_MN_0125_aurore-leclerc.jpg",
+    "sandra-guiller": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74ad367c9bee5cdfe8ff89_MN_0126_sandra-guiller.jpg",
+    "valerie-de-icco": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74ad4fb1424219ec899730_MN_0127_valerie-de-icco.jpg",
+    "philippe-boidin": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74ad7bb142424ed9899808_MN_0128_philippe-boidin.jpg",
+    "bernard-garnier-de-l": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74ad957c9bee83a4e900a5_MN_0129_bernard-garnier.jpg",
+    "estelle-cegelly": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74adba0b72d6e95082d660_MN_0130_estelle-cegelly.jpg",
+    "marie-laure-metral": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74add07c9beebd79e90130_MN_0131_marie-laure-metral.jpg",
+    "paulette-martineau": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74adeb0b72d62eea82d6e9_MN_0132_paulette-martineau.jpg",
+    "sophie-boehler": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74ae050b72d6ddf182d755_MN_0133_sophie-boehler.jpg",
+    "janeczka-lee": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/5f74ae1be76bccf3415ed0ea_MN_0134_janeczka-lee.jpg",
+    "alexis-jan": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/60e6b9db8bdaaa7cdaebd5a6_alexis%20jan.jpg",
+    "claire-rolland": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/60e6bd8213b8d812b509d21f_claire-rolland.jpg",
+    "sophie-muraz": "https://cdn.prod.website-files.com/5f278473ba1142edbb88b0e2/60e6bf6f0d09c14d06f63e56_sophie%20muraz.jpg"
+  };
+
+  // Embedded practitioner data (for local file access)
+  const PRACTITIONER_DATA = {
+    "practitioners": [
+      {"id":"asta-blazinskiene","name":"Asta Blazinskiene","city":"Vilnius","country":"Lithuania","languages":["English","Lithuanian"],"email":"asta.blazinskiene@gmail.com","qualification":"MN Practitioner Trainer, Advanced MNLIFE Instructor","bio":"I am a Certified MN Practitioner and am qualified to implement the MN Mapper with individuals to help identify and align their unique Natures.","linkedin":"","affiliation_status":true},
+      {"id":"sacha-lacoste","name":"Sacha Lacoste","city":"Lyon","country":"France","languages":["French"],"email":"sacha.lacoste@gmail.com","qualification":"MN Practitioner Trainer, Certified MNLIFE Instructor","bio":"Formé par Steven Rudolph depuis 2016 et inspiré par la CNV, j'accompagne sur les questions d'alignement, d'équilibre de vie, d'orientation et de reconversion professionnelle.","linkedin":"","affiliation_status":true},
+      {"id":"nadine-deswasiere","name":"Nadine Deswasiere","city":"Paris","country":"France","languages":["English","French"],"email":"ndeswasiere@ethiconseil.fr","qualification":"MN Practitioner Trainer, Certified MNLIFE Instructor","bio":"Recruter, trouver les bonnes compétences... ou trouver un métier, lancer une activité qui vous enthousiasme, vous donne le sentiment d'être utile, d'avoir un sens à votre vie.","linkedin":"","affiliation_status":true},
+      {"id":"robert-detey","name":"Robert Detey","city":"Vaud","country":"Switzerland","languages":["French"],"email":"robert.detey@bluewin.ch","qualification":"MN Practitioner Trainer, Certified MNLIFE Instructor, Certified MNCAREERS Instructor","bio":"Spécialiste de la positive attitude, j'accompagne toutes personnes à trouver leur voie. J'utilise les Natures Multiples pour identifier votre potentiel unique.","linkedin":"","affiliation_status":true},
+      {"id":"renata-skimeliene","name":"Renata Škimelienė","city":"Kaunas","country":"Lithuania","languages":["Lithuanian"],"email":"renata@kalba.lt","qualification":"MN Practitioner Trainer, Master MN Practitioner, Group MN Practitioner and Trainer","bio":"I've been a career counselor since 2013. I mainly work with students who need help in choosing school subjects, fields of study, and university.","linkedin":"","affiliation_status":true},
+      {"id":"samuel-gerrand","name":"Samuel Gerrand","city":"Cahors","country":"France","languages":["French"],"email":"contact@samuelgerrand.fr","qualification":"Master MN Practitioner","bio":"Coach en Neurosciences appliquées, Formateur/Praticien Natures Multiples et créateur du bilan de compétences Je change de cap certifié Qualiopi.","linkedin":"","affiliation_status":true},
+      {"id":"lina-jureniene","name":"Lina Jureniene","city":"Kaunas","country":"Lithuania","languages":["English","Lithuanian"],"email":"ljureniene5@gmail.com","qualification":"Master MN Practitioner","bio":"Trained as an Organizational Psychologist, I specialize in Life Balance and Career Counselling. I work with MN Mapper to help people bring more flow and fulfillment into their daily lives.","linkedin":"","affiliation_status":true},
+      {"id":"audra-stankeviciene","name":"Audra Stankeviciene","city":"Vilnius","country":"Lithuania","languages":["Lithuanian"],"email":"audra@stankeviciene.eu","qualification":"Master MN Practitioner","bio":"Your work or studies don't satisfy you - let's talk! I know the cost and value of climbing the ladder - I was head of department at a corporate bank until I did my MN Mapper.","linkedin":"","affiliation_status":true},
+      {"id":"daniel-wagner","name":"Daniel Wagner","city":"Genève","country":"Switzerland","languages":["English","French"],"email":"dwmn65@gmail.com","qualification":"Master MN Practitioner","bio":"I am a Certified MN Practitioner and am qualified to implement the MN Mapper with individuals to help identify and align their unique Natures.","linkedin":"","affiliation_status":true},
+      {"id":"mohamed-karim-lahlou","name":"Mohamed Karim Lahlou","city":"Casablanca","country":"Morocco","languages":["English","French"],"email":"mklahlou@gmail.com","qualification":"Master MN Practitioner","bio":"Convaincu que chaque personne a sa propre voie d'accomplissement, mon accompagnement permet de reconnaître et se connecter à sa mission de vie et ses propres ressources.","linkedin":"","affiliation_status":true},
+      {"id":"corinne-jacob","name":"Corinne Jacob","city":"Auvergne Rhône Alpes","country":"France","languages":["English","French"],"email":"cjacob@un-autre-echo.com","qualification":"Master MN Practitioner","bio":"Coach certifiée membre de l'EMCC ayant l'expérience de l'entreprise, j'aime ouvrir des possibles grâce au concept Multiple Natures pour aider les personnes à trouver leur juste place.","linkedin":"","affiliation_status":true},
+      {"id":"delphine-vasseur","name":"Delphine Vasseur","city":"Hauts de France","country":"France","languages":["English","French"],"email":"bienvenue@delphinevasseur.fr","qualification":"Professional MN Practitioner","bio":"Ne passez pas à côté de votre vie! Je m'appuie sur le MN Mapper pour vous aider à définir votre cap, découvrir vos aspirations profondes personnelles ou professionnelles.","linkedin":"","affiliation_status":true},
+      {"id":"jan-goodman","name":"Jan Goodman","city":"Somerville, New Jersey","country":"USA","languages":["English"],"email":"jgoodman@co.somerset.nj.us","qualification":"Advanced MN Practitioner","bio":"Career Coaching, Workforce Development, Workshop Facilitation and Delivery ensuring the Strategic Pairing of People and Opportunities.","linkedin":"","affiliation_status":true},
+      {"id":"marjorie-leal-delgado","name":"Marjorie Leal Delgado","city":"Divonne les Bains","country":"France","languages":["French","Spanish"],"email":"marjorie@leelama.fr","qualification":"Advanced MN Practitioner","bio":"Les Natures Multiples permettent de prendre conscience des élans naturels, ainsi que le potentiel latent qui sommeille en chacun.","linkedin":"","affiliation_status":true},
+      {"id":"delphine-pierrejean","name":"Delphine Pierrejean","city":"Région Grand Est","country":"France","languages":["French"],"email":"delphinepierrejean@gmail.com","qualification":"Advanced MN Practitioner","bio":"I am a Certified MN Practitioner and am qualified to implement the MN Mapper with individuals to help identify and align their unique Natures.","linkedin":"","affiliation_status":true},
+      {"id":"eufemia-colucci","name":"Eufemia Colucci","city":"Puglia","country":"Italy","languages":["English","Italian"],"email":"eufemia.colucci@libero.it","qualification":"Advanced MN Practitioner","bio":"I am an English teacher with a deep interest in Neuro Sciences. I love working with Multiple Natures to help students and people of all ages identify their unique talents.","linkedin":"","affiliation_status":true},
+      {"id":"evelyne-ivorra","name":"Evelyne Ivorra","city":"Toulouse / Casablanca","country":"France","languages":["English","French"],"email":"contact@evelyneivorra.com","qualification":"Advanced MN Practitioner","bio":"I am a Certified MN Practitioner and am qualified to implement the MN Mapper with individuals to help identify and align their unique Natures.","linkedin":"","affiliation_status":true},
+      {"id":"julien-schmidt","name":"Julien Schmidt","city":"04220 Sainte-Tulle","country":"France","languages":["English","French"],"email":"julien.schmidt@kairos-proximity.com","qualification":"Certified MN Practitioner","bio":"As an ICF Certified Coach (PCC) with 20 years of experience in HR at global level, I work extensively with people who face change and transformation issues.","linkedin":"","affiliation_status":true},
+      {"id":"elodie-jalicoux","name":"Elodie Jalicoux","city":"Saint-Brieuc, Bretagne","country":"France","languages":["French"],"email":"elj@ecomail.fr","qualification":"Certified MN Practitioner","bio":"Avec les MN j'accompagne les personnes à identifier leur potentiel unique et ses chemins de fructification.","linkedin":"","affiliation_status":true},
+      {"id":"laetitia-bizard","name":"Laetitia Bizard","city":"Saint-Paul, La Réunion","country":"France","languages":["French","English"],"email":"laetitia.bizard@gmail.com","qualification":"Certified MN Practitioner","bio":"Après 8 ans de management en RH et 7 ans dans l'entrepreneuriat, je suis en joie de pouvoir accompagner des individus de tous milieux professionnels.","linkedin":"","affiliation_status":true},
+      {"id":"ingrid-atamian","name":"Ingrid Atamian","city":"Cassis, Marseille","country":"France","languages":["French"],"email":"ingrid@creonsdemainensemble.com","qualification":"Certified MN Practitioner","bio":"En tant que Coach de vie, Ingrid Atamian réalise des formations et coachings en développement de potentiel pour les salariés et entrepreneurs.","linkedin":"","affiliation_status":true},
+      {"id":"christine-clifton","name":"Christine Clifton","city":"North Carolina","country":"USA","languages":["English"],"email":"christine@christineclifton.com","qualification":"Certified MN Practitioner","bio":"I guide Mindful Career-Changers and Soulful Consultants & Advisors to keep their inner fire burning so they don't burn out.","linkedin":"","affiliation_status":true},
+      {"id":"ilze-usacka-priekule","name":"Ilze Ušacka - Priekule","city":"Riga","country":"Latvia","languages":["Latvian","Russian"],"email":"spejraisis@gmail.com","qualification":"Certified MN Practitioner","bio":"Esmu sertificēts ICF koučs un MN Praktikis. Mana profesionālā pieredze ir pārdošana.","linkedin":"","affiliation_status":true},
+      {"id":"carole-rayon","name":"Carole Rayon","city":"Paris","country":"France","languages":["French"],"email":"c.rayon.mn@orange.fr","qualification":"Certified MN Practitioner","bio":"Révéler votre potentiel pour le valoriser en vous accompagnant avec sécurité et efficacité. De 14 à 70 ans, je peux vous aider à trouver ou à (re)trouver votre Voie.","linkedin":"","affiliation_status":true},
+      {"id":"pierre-wansek","name":"Pierre Wansek","city":"Paris, Chambéry","country":"France","languages":["French","English"],"email":"pierre@pierrewansek.com","qualification":"Certified MN Practitioner","bio":"Consultant, coach, médiateur certifié, j'aide les autres à se ré-accorder et prendre leur juste place.","linkedin":"","affiliation_status":true},
+      {"id":"celine-bouillaguet","name":"Céline Bouillaguet","city":"Colmar","country":"France","languages":["French","English","Spanish"],"email":"cbouillaguet@yahoo.fr","qualification":"Certified MN Practitioner","bio":"Depuis 2007, j'accompagne celles et ceux en quête de sens, levant blocages et croyances pour révéler leur plein potentiel.","linkedin":"","affiliation_status":true},
+      {"id":"catherine-heurtebise","name":"Catherine Heurtebise","city":"Angers, Pays de Loire","country":"France","languages":["French"],"email":"contact@catherineheurtebise.fr","qualification":"Certified MN Practitioner","bio":"Coach certifiée, formée en Communication Non Violente, j'éclaire les personnes pour se « relier » à soi.","linkedin":"","affiliation_status":true},
+      {"id":"stephane-bachmann","name":"Stephane Bachmann","city":"Genève","country":"Switzerland","languages":["English","French"],"email":"info@lecoleb.com","qualification":"Certified MN Practitioner","bio":"Pluriels et Singuliers co-founder, I accompany you in your progress - sports, languages, arts. Seeing your inherent qualities is my strength.","linkedin":"","affiliation_status":true},
+      {"id":"benoit-rossetti","name":"Benoit Rossetti","city":"Mulhouse, Alsace","country":"France","languages":["French"],"email":"adc.rossetti@gmail.com","qualification":"Certified MN Practitioner","bio":"Artisan vocationnel, j'accompagne avec enthousiasme les individus (orientation scolaire et professionnelle) et les groupes (Intelligence Collective).","linkedin":"","affiliation_status":true},
+      {"id":"christine-bollard","name":"Christine Bollard","city":"Annecy","country":"France","languages":["French"],"email":"christine.bollard21@gmail.com","qualification":"Certified MN Practitioner","bio":"Je suis coach certifiée intervenant en organisation - accompagnateur du changement. Je vous accompagne dans la recherche de votre vrai self.","linkedin":"","affiliation_status":true},
+      {"id":"anna-perrenoud","name":"Anna Perrenoud","city":"Lausanne","country":"Switzerland","languages":["English","French"],"email":"a_perrenoud@yahoo.com","qualification":"Certified MN Practitioner","bio":"En quête de sens? Ma passion est de révéler votre potentiel unique. 10 ans d'expérience dans la réinsertion et la formation.","linkedin":"","affiliation_status":true},
+      {"id":"rahul-mishra","name":"Rahul Mishra","city":"Kota, Rajasthan","country":"India","languages":["English"],"email":"lifecoachtrendzeducation@gmail.com","qualification":"Certified MN Practitioner","bio":"I am a Certified MN Practitioner and am qualified to implement the MN Mapper with individuals to help identify and align their unique Natures.","linkedin":"","affiliation_status":true},
+      {"id":"nolwenn-poens","name":"Nolwenn Poens","city":"Les Avirons, Ile de La Réunion","country":"France","languages":["French"],"email":"nolwennpoens@gmail.com","qualification":"Certified MN Practitioner","bio":"Professionnelle dans l'insertion professionnelle pendant 18 ans, j'accompagne grâce aux Natures Multiples, les jeunes en rupture, étudiants et adultes en reconversion.","linkedin":"","affiliation_status":true},
+      {"id":"emmanuel-le-bouille","name":"Emmanuel Le Bouille","city":"Lille","country":"France","languages":["French","English"],"email":"elebouille@audendi.fr","qualification":"Certified MN Practitioner","bio":"Coach-Consultant et praticien MN, je vous aide à trouver la voie professionnelle qui vous correspond vraiment.","linkedin":"","affiliation_status":true},
+      {"id":"mathilde-blanchardon","name":"Mathilde Blanchardon","city":"Lyon","country":"France","languages":["French","English"],"email":"blanchardon.mathilde@gmail.com","qualification":"Certified MN Practitioner","bio":"I help young people identify their talent and unfold their potential using the great tools that I myself have tested in my own quest of Who am I?","linkedin":"","affiliation_status":true},
+      {"id":"valerie-kligerman","name":"Valérie Kligerman","city":"Saint-Cloud","country":"France","languages":["French","English"],"email":"kligerman@feelife.fr","qualification":"Certified MN Practitioner","bio":"I am a Certified MN Practitioner and am qualified to implement the MN Mapper with individuals to help identify and align their unique Natures.","linkedin":"","affiliation_status":true},
+      {"id":"sarah-cabero","name":"Sarah Cabero","city":"Lucon","country":"France","languages":["French"],"email":"sarahcabero@universdetre.com","qualification":"Certified MN Practitioner","bio":"J'ai créé et géré un centre de formations en sophrologie, coaching pendant 12 ans. J'aime accompagner les personnes à trouver leur métier aligné.","linkedin":"","affiliation_status":true},
+      {"id":"dimitri-guiller","name":"Dimitri Guiller","city":"Héricourt, Bourgogne Franche Comté","country":"France","languages":["French"],"email":"dimitriguiller.mntest@gmail.com","qualification":"Certified MN Practitioner","bio":"Mieux vous vous comprenez, meilleures seront les décisions que vous pourrez prendre pour votre vie personnelle et professionnelle.","linkedin":"","affiliation_status":true},
+      {"id":"florent-rousset","name":"Florent Rousset","city":"Bourgogne-Franche-Comté","country":"France","languages":["English","French"],"email":"f.rousset@intuitiv-experiences.com","qualification":"Certified MN Practitioner","bio":"I am a Certified MN Practitioner and am qualified to implement the MN Mapper with individuals to help identify and align their unique Natures.","linkedin":"","affiliation_status":true},
+      {"id":"wes-lucus","name":"Wes Lucus","city":"California","country":"USA","languages":["English"],"email":"wes@weslucus.com","qualification":"Certified MN Practitioner","bio":"I work with entrepreneurs, as well as couples and individuals all over the world - helping them to master their mindset and maintain consistent progress toward their goals.","linkedin":"","affiliation_status":true},
+      {"id":"muriel-rodriguez","name":"Muriel Rodriguez","city":"Marseille","country":"France","languages":["French"],"email":"murmualy@hotmail.fr","qualification":"Certified MN Practitioner","bio":"Guide de vie, je porte dignement les valeurs de liberté et authenticité. Ces missions résonnent en moi: le guidage de jeunes perdus dans le choix d'études.","linkedin":"","affiliation_status":true},
+      {"id":"sophie-koubbi","name":"Sophie Koubbi","city":"Annecy","country":"France","languages":["French"],"email":"sophie@dubonheurenbarres.com","qualification":"Certified MN Practitioner","bio":"Convaincue qu'en chacun d'entre-nous, il y a ces petits trucs qui nous rendent si spéciaux, je me sers du MN Mapper et du coaching pour vous aider.","linkedin":"","affiliation_status":true},
+      {"id":"serena-cecile-vaytilingom","name":"Séréna Cécile Vaytilingom","city":"Sainte Clotilde, Ile de la Réunion","country":"France","languages":["French","English"],"email":"contact@alihom.com","qualification":"Certified MN Practitioner","bio":"Coach certifiée, Praticienne en Nature Multiples, Formatrice et Consultante en stratégie de développement et managériale.","linkedin":"","affiliation_status":true},
+      {"id":"catherine-serres","name":"Catherine Serres","city":"Gironde","country":"France","languages":["French"],"email":"serres_catherine@yahoo.fr","qualification":"Certified MN Practitioner","bio":"Comment s'y prendre pour choisir la bonne orientation professionnelle, se reconvertir, se préparer à la retraite? Praticienne NM, je vous accompagne.","linkedin":"","affiliation_status":true},
+      {"id":"aurore-leclerc","name":"Aurore Leclerc","city":"Valentigney, Franche-comté","country":"France","languages":["French"],"email":"leclercaurore7@gmail.com","qualification":"Certified MN Practitioner","bio":"L'espace dont tu as besoin pour trouver ta voie: 1/ Reconnecter à tes envies, tes désirs et tes aspirations, 2/ Faire le bilan de tes capacités.","linkedin":"","affiliation_status":true},
+      {"id":"sandra-guiller","name":"Sandra Guiller","city":"Héricourt","country":"France","languages":["French"],"email":"bilanmntest.sandraguiller@gmail.com","qualification":"Certified MN Practitioner","bio":"Pour être aligné avec soi-même, trouver un bien-être dans son travail et sa vie privée, ajuster ses activités professionnelles et personnelles.","linkedin":"","affiliation_status":true},
+      {"id":"valerie-de-icco","name":"Valérie De Icco","city":"Essertines-sur-Rolle, Vaud","country":"Switzerland","languages":["French"],"email":"valerie.deicco@gmail.com","qualification":"Certified MN Practitioner","bio":"Certifiée Praticienne en Natures Multiples. Passionnée par les soins énergétiques et la radiesthésie, je soutiens notre monde de demain.","linkedin":"","affiliation_status":true},
+      {"id":"philippe-boidin","name":"Philippe Boidin","city":"Publier, Haute Savoie","country":"France","languages":["French","English"],"email":"philippeboidin@wanadoo.fr","qualification":"Certified MN Practitioner","bio":"Recruter le bon candidat, avoir un job qui a du sens, Retrouver la confiance en vous, identifier votre potentiel afin de révéler la meilleure version de vous-même.","linkedin":"","affiliation_status":true},
+      {"id":"bernard-garnier-de-l","name":"Bernard Garnier de L","city":"Paris & Banlieue Ouest","country":"France","languages":["French","English","Spanish"],"email":"sayactivate@gmail.com","qualification":"Certified MN Practitioner","bio":"Coach professionnel, PNL, hypnose, MBTI, MBA ESCP & GSU USA pour dirigeants & entrepreneurs en bilans de compétences ou changements d'orientation.","linkedin":"","affiliation_status":true},
+      {"id":"estelle-cegelly","name":"Estelle Cegelly","city":"Nice","country":"France","languages":["French"],"email":"contact@estellecegelly.com","qualification":"Certified MN Practitioner","bio":"Coach, formatrice en prise de parole et conférencière, j'aide les dirigeants, entrepreneurs et managers à révéler leur potentiel et leur leadership naturel.","linkedin":"","affiliation_status":true},
+      {"id":"marie-laure-metral","name":"Marie-Laure Metral","city":"Haute-Savoie","country":"France","languages":["French"],"email":"mlmetral74@gmail.com","qualification":"Certified MN Practitioner","bio":"Adultes et adolescents, je vous accompagne pour que vous révéliez vos potentiels uniques.","linkedin":"","affiliation_status":true},
+      {"id":"paulette-martineau","name":"Paulette Martineau","city":"Angers","country":"France","languages":["French"],"email":"paulette.martineau@gmail.com","qualification":"Certified MN Practitioner","bio":"Vous voulez mettre en pratique votre désir de changement, vous pouvez le faire, maintenant, en identifiant vos Intelligences et Natures Multiples.","linkedin":"","affiliation_status":true},
+      {"id":"sophie-boehler","name":"Sophie Boehler","city":"Nyon, Vaud","country":"Switzerland","languages":["French"],"email":"sophie.boehler@bluewin.ch","qualification":"Certified MN Practitioner","bio":"Au cours de mon parcours professionnel en entreprise, j'ai ressenti le besoin de revérifier mon alignement. C'est ainsi que j'ai découvert le concept Natures Multiples.","linkedin":"","affiliation_status":true},
+      {"id":"janeczka-lee","name":"Janeczka Lee","city":"Los Angeles, CA","country":"USA","languages":["English"],"email":"jlee@letsimpactiv8.com","qualification":"Certified MN Practitioner, Certified MNCAREERS Instructor","bio":"A Mindset Cultivator revealing unique traits to align & maximize them with self, friends, family, and career.","linkedin":"","affiliation_status":true},
+      {"id":"alexis-jan","name":"Alexis Jan","city":"Val-Fouzon, Région centre val de Loire","country":"France","languages":["French"],"email":"","qualification":"Certified MN Practitioner","bio":"","linkedin":"","affiliation_status":true},
+      {"id":"claire-rolland","name":"Claire Rolland","city":"Toulouse","country":"France","languages":["French"],"email":"","qualification":"Certified MN Practitioner","bio":"","linkedin":"","affiliation_status":true},
+      {"id":"sophie-muraz","name":"Sophie Muraz","city":"Veigy-Foncenex, Haute-Savoie","country":"France","languages":["French"],"email":"","qualification":"Certified MN Practitioner","bio":"","linkedin":"","affiliation_status":true}
+    ]
+  };
+
+  let practitioners = [];
+  let currentFilter = 'all';
+
+  // DOM Elements
+  const directoryList = document.getElementById('directory-list');
+  const filtersContainer = document.querySelector('.directory-filters');
+  const modal = document.getElementById('profile-modal');
+  const modalBody = document.getElementById('modal-body');
+  const modalClose = document.querySelector('.modal-close');
+
+  // Initialize
+  function init() {
+    // Use embedded data
+    practitioners = PRACTITIONER_DATA.practitioners.filter(p => p.affiliation_status);
+
+    buildFilters();
+    renderDirectory();
+    setupEventListeners();
+  }
+
+  // Build country filter buttons
+  function buildFilters() {
+    const countries = [...new Set(practitioners.map(p => p.country))].sort();
+
+    countries.forEach(country => {
+      const btn = document.createElement('button');
+      btn.className = 'filter-btn';
+      btn.dataset.country = country;
+      btn.textContent = country;
+      filtersContainer.appendChild(btn);
+    });
+  }
+
+  // Render directory list (Tier 1)
+  function renderDirectory() {
+    const filtered = (currentFilter === 'all'
+      ? practitioners
+      : practitioners.filter(p => p.country === currentFilter))
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    directoryList.innerHTML = filtered.map(p => `
+      <div class="practitioner-row" data-id="${p.id}">
+        <div class="practitioner-info">
+          <span class="practitioner-name">${p.name}</span>
+          <span class="practitioner-location">${p.city}, ${p.country}</span>
+        </div>
+        <div class="practitioner-languages">${p.languages.join(', ')}</div>
+        <div class="practitioner-actions">
+          ${p.email ? `<a href="mailto:${p.email}" class="btn-email">Email</a>` : ''}
+          <button class="btn-profile" data-id="${p.id}">View Profile</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Get initials from name for placeholder
+  function getInitials(name) {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  }
+
+  // Format qualification with transitional wording
+  function formatQualification(qualification) {
+    // Apply transitional wording: "Completed X Training (Prior to 2026)"
+    if (qualification.includes('Certified MN Practitioner')) {
+      // Replace "Certified MN Practitioner" with transitional wording
+      return qualification.replace(
+        /Certified MN Practitioner/g,
+        'Completed Certified MN Practitioner Training (Prior to 2026)'
+      );
+    }
+    // For other qualifications (Master, Advanced, Professional, Trainer), also apply transitional
+    if (qualification.includes('MN Practitioner')) {
+      return 'Completed ' + qualification + ' Training (Prior to 2026)';
+    }
+    return qualification;
+  }
+
+  // Render profile modal (Tier 2)
+  function renderProfile(id) {
+    const p = practitioners.find(pr => pr.id === id);
+    if (!p) return;
+
+    const imageUrl = PRACTITIONER_IMAGES[p.id] || '';
+    const formattedQualification = formatQualification(p.qualification);
+
+    modalBody.innerHTML = `
+      <div class="profile-header">
+        ${imageUrl ? `<img src="${imageUrl}" alt="${p.name}" class="profile-photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="profile-photo-placeholder profile-initials" style="display:none;">${getInitials(p.name)}</div>` : `<div class="profile-photo-placeholder profile-initials">${getInitials(p.name)}</div>`}
+        <div class="profile-header-info">
+          <h2 class="profile-name">${p.name}</h2>
+          <p class="profile-location">${p.city}, ${p.country}</p>
+        </div>
+      </div>
+
+      <div class="profile-section">
+        <h3>Training Completed</h3>
+        <p>${formattedQualification}</p>
+      </div>
+
+      <div class="profile-section">
+        <h3>Languages</h3>
+        <p>${p.languages.join(', ')}</p>
+      </div>
+
+      ${p.bio ? `
+      <div class="profile-section">
+        <h3>About</h3>
+        <p>${p.bio}</p>
+      </div>
+      ` : ''}
+
+      <div class="profile-section profile-contact">
+        <h3>Contact</h3>
+        ${p.email ? `<p><a href="mailto:${p.email}">${p.email}</a></p>` : '<p>Contact information not available</p>'}
+        ${p.linkedin ? `<p><a href="${p.linkedin}" target="_blank" rel="noopener">LinkedIn Profile</a></p>` : ''}
+      </div>
+    `;
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  // Close modal
+  function closeModal() {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  // Setup event listeners
+  function setupEventListeners() {
+    // Filter buttons
+    filtersContainer.addEventListener('click', (e) => {
+      if (e.target.classList.contains('filter-btn')) {
+        // Update active state
+        filtersContainer.querySelectorAll('.filter-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        e.target.classList.add('active');
+
+        // Apply filter
+        currentFilter = e.target.dataset.country || 'all';
+        renderDirectory();
+      }
+    });
+
+    // View profile buttons
+    directoryList.addEventListener('click', (e) => {
+      if (e.target.classList.contains('btn-profile')) {
+        renderProfile(e.target.dataset.id);
+      }
+    });
+
+    // Close modal
+    modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    // Escape key closes modal
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('active')) {
+        closeModal();
+      }
+    });
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
