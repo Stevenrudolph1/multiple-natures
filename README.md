@@ -70,4 +70,4 @@ Future files from Google Drive land in these locations:
 
 - Training spec: `training/renergence-practitioner/TRAINING-SPEC.md`
 - Practitioner pathway: `marketing/PRODUCT-FUNNEL-AND-PRACTITIONER-PATHWAY.md`
-- Pricing: `planning/governance/business-model/LICENSING-PRICING-FRAMEWORK-v1_1.md`
+- Pricing: `knowledge/licensing/LICENSING-PRICING-FRAMEWORK-v2.md`
